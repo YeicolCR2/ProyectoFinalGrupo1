@@ -4,13 +4,13 @@
 
 - **Yeicol Alexo Salas Morales**: FI24036547
 - **Freddy Gabriel Rodríguez Brenes**: FI24035855
-- **Brandon Andrey Brenes Portuguez**: 
+- **Brandon Andrey Brenes Portuguez**: F124041633
 
 ### Usuarios y Correos de Git
 
 - **Yeicol Alexo Salas Morales**: YeicolCR2 / Yeicol2001s@gmail.com
 - **Freddy Gabriel Rodríguez Brenes**: FR-18 / freddy.rodriguez.6004@gmail.com
-- **Brandon Andrey Brenes Portuguez**: 
+- **Brandon Andrey Brenes Portuguez**: BrandonBrenes0315 / brandonbrenespp@gmail.com
 
 ### IDE Utilizado
 
