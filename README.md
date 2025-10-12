@@ -15,6 +15,7 @@
 ### IDE Utilizado
 
 Se usó IntelliJ IDEA Community, este editor fue desarrollado por JetBrains para desarrollar en Java y posee dos versiones; la que se está utilizando para el proyecto (Community) y la comercial o de pago (Ultimate).
+<img width="1383" height="1025" alt="image" src="https://github.com/user-attachments/assets/f4d7c4f9-3263-415d-bae5-36949b2768ff" />
 
 ### Enlaces
 
