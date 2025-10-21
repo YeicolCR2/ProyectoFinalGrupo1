@@ -11,9 +11,12 @@
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
     </padding>
 
+    <Label fx:id="lblTitle" style="-fx-font-size: 52px; -fx-font-weight: bold;" text="The Sandwich Game" />
+
+
     <Label style="-fx-font-size: 32px; -fx-font-weight: bold;" text="Menu Principal" />
 
-    <Label style="-fx-font-size: 16px;" text="Bienvenido al Sistema de Cartas" />
+    <Label style="-fx-font-size: 16px;" />
 
     <VBox alignment="CENTER" spacing="15.0">
         <VBox.margin>
@@ -21,6 +24,8 @@
         </VBox.margin>
 
         <Button fx:id="btnNewGame" onAction="#handleNewGame" style="-fx-font-size: 16px; -fx-min-width: 250px; -fx-min-height: 50px; -fx-background-color: c0df85;" text="Crear Nueva Partida" />
+
+<!--        <Button fx:id="LoadGame" onAction="#handleLoadGame" style="-fx-font-size: 16px; -fx-min-width: 250px; -fx-min-height: 50px; -fx-background-color: c0df85;" text="Cargar Partida" />-->
 
         <Button fx:id="btnViewCards" onAction="#handleViewCards" style="-fx-font-size: 16px; -fx-min-width: 250px; -fx-min-height: 50px; -fx-background-color: c0df85;" text="Ver Todas las Cartas" />
 

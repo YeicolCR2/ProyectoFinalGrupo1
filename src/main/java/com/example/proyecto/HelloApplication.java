@@ -12,6 +12,6 @@ public class HelloApplication extends Application {
         NavigationManager navigationManager = new NavigationManager(stage);
         navigationManager.navigateToMenu();
         stage.show();
-        stage.fullScreenProperty();
+        stage.setFullScreen(true);
     }
 }

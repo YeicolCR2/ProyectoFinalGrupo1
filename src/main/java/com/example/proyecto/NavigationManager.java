@@ -48,6 +48,37 @@ public class NavigationManager {
     }
 
     public void navigateToNewGame() {
-        //TODO:crear funcionalidad
+        try{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/new-game-view.fxml"));
+        Scene scene = new Scene(loader.load(), 640, 480);
+
+        NewGameController controller = loader.getController();
+        controller.setNavigationManager(this);
+
+        primaryStage.setScene(scene);
+        primaryStage.setFullScreen(true);
+        primaryStage.show();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void navigateToGamePlay(GameState gameState) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gameplay-view.fxml"));
+            Scene scene = new Scene(loader.load(), 640, 480);
+
+            GamePlayController controller = loader.getController();
+            controller.setNavigationManager(this);
+
+            controller.setGameState(gameState);
+
+            primaryStage.setScene(scene);
+            primaryStage.setFullScreen(true);
+            primaryStage.show();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
