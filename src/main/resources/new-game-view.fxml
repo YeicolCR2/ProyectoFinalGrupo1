@@ -12,8 +12,22 @@
         <Button fx:id="btnBackToMenu" onAction="#handleBackToMenu" style="-fx-font-size: 14px;" text="← Volver al Menú" />
     </HBox>
 
-    <Label alignment="CENTER" contentDisplay="CENTER" style="-fx-background-color: c0df85; -fx-font-size: 52px;" text="The Sandwich Game" textAlignment="CENTER" />
-
+    <Label
+            alignment="CENTER"
+            contentDisplay="CENTER"
+            textAlignment="CENTER"
+            text="The Sandwich Game "
+            style="
+        -fx-background-color: #c0df85;
+        -fx-font-size: 52px;
+        -fx-font-weight: bold;
+        -fx-text-fill: #1a1a1d;
+        -fx-padding: 15;
+        -fx-border-radius: 10;
+        -fx-background-radius: 10;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0, 2, 3);
+    "
+    />
     <Button onAction="#handlePlay" alignment="TOP_LEFT" contentDisplay="CENTER" mnemonicParsing="false" text="PLAY" />
 
     <Label alignment="CENTER" contentDisplay="BOTTOM" graphicTextGap="5.0" nodeOrientation="LEFT_TO_RIGHT" style="-fx-font-size: 30px;" text="Instrucciones" />

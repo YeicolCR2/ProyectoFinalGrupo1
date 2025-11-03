@@ -68,11 +68,21 @@ public class HtmlTemplateBuilder {
         // Estilos minimalistas de emergencia si no se puede cargar ningún archivo
         return """
                 html,body{margin:0;padding:0;background:#1a1a1d;color:#e8eaed;font-family:'Segoe UI',sans-serif;}
-                body{display:flex;flex-direction:column;padding:8px;}
-                .suit-container{flex:1;display:flex;flex-direction:column;}
-                .grid{display:grid;grid-template-columns:repeat(13,1fr);gap:4px;}
-                img{width:100%;height:100%;object-fit:contain;}
-                """;
+            body{display:flex;flex-direction:column;padding:8px;}
+            .suit-container{flex:1;display:flex;flex-direction:column;}
+            .grid{display:grid;grid-template-columns:repeat(13,1fr);gap:4px;}
+            img{width:100%;height:100%;object-fit:contain;}
+
+            /* estilo de los nombres de los palos */
+            .cap {
+                color: #7ddf64; /* verde suave */
+                font-weight: bold;
+                font-size: 1.5em;
+                text-transform: uppercase;
+                text-align: center;
+                margin-bottom: 8px;
+            }
+            """;
     }
 
     private String getStyleFooter() {
@@ -95,8 +105,17 @@ public class HtmlTemplateBuilder {
         StringBuilder grid = new StringBuilder();
 
         for (String suit : config.getSuits()) {
+            // Agregar el símbolo sin afectar la funcionalidad
+            String suitDisplay = switch (suit.toLowerCase()) {
+                case "clubs" -> "clubs ♣";
+                case "diamonds" -> "diamonds ♦";
+                case "hearts" -> "hearts ♥";
+                case "spades" -> "spades ♠";
+                default -> suit;
+            };
+
             grid.append("<div class='suit-container'>");
-            grid.append("<div class='cap'>").append(suit).append("</div>");
+            grid.append("<div class='cap'>").append(suitDisplay).append("</div>");
             grid.append("<div class='grid'>");
 
             for (Rank rank : config.getRanks()) {
@@ -109,6 +128,7 @@ public class HtmlTemplateBuilder {
 
         return grid.toString();
     }
+
 
     private String getHtmlFooter() {
         return "</body></html>";
