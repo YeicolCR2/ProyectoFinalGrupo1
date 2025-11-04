@@ -1,28 +1,97 @@
 package com.example.proyecto;
 
+import com.example.proyecto.enums.Rank;
+import com.example.proyecto.enums.Suit;
+import javafx.application.Platform;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import java.io.IOException;
+import netscape.javascript.JSObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class GamePlayController {
 
-    // Dependencias inyectadas por el NavigationManager
     private GameState gameState;
     private NavigationManager navigationManager;
 
-    // Componente visual inyectado desde gameplay-view.fxml
+    private final CardDeckConfig cardDeckConfig = new CardDeckConfig();
+    private final CardResourceLoader cardResourceLoader = new CardResourceLoader(cardDeckConfig);
+
+    // --- Bridge persistente entre Java y JavaScript ---
+    private final JSBridge jsBridge = new JSBridge();
+
+    // Variable para almacenar temporalmente las 3 cartas seleccionadas por el JS
+    private String[] currentSelection = null;
+
     @FXML
     private WebView gameWebView;
 
+    @FXML
+    private Button barajarButton;
 
-    //(Setters)
+    @FXML
+    private Label estadoSeleccionLabel;
 
-    // 1. Recibe el estado del juego y activa la carga de la vista
+    @FXML
+    private Button validarSandwichButton;
+
+    // ==========================================================
+    // JS-JAVA BRIDGE: CLASE EXPUESTA A JAVASCRIPT
+    // ==========================================================
+    public class JSBridge {
+        /**
+         * Llamado por JavaScript cada vez que el usuario hace clic en una carta.
+         */
+        public void actualizarControles(String seleccionadasString) {
+            int count = seleccionadasString.isEmpty() ? 0 : seleccionadasString.split(",").length;
+
+            if (count == 3) {
+                currentSelection = seleccionadasString.split(",");
+            } else {
+                currentSelection = null;
+            }
+
+            Platform.runLater(() -> {
+                if (estadoSeleccionLabel != null)
+                    estadoSeleccionLabel.setText(String.format("Seleccionadas: %d / 3", count));
+                if (validarSandwichButton != null)
+                    validarSandwichButton.setDisable(count != 3);
+            });
+        }
+    }
+
+    // ==========================================================
+    // MÉTODOS AUXILIARES
+    // ==========================================================
+
+    private Optional<Card> getCardFromId(String cardId) {
+        String[] parts = cardId.split("_");
+        if (parts.length != 2) return Optional.empty();
+
+        try {
+            Rank rank = Rank.valueOf(parts[0].toUpperCase());
+            Suit suit = Suit.valueOf(parts[1].toUpperCase());
+
+            return gameState.getMano().stream()
+                    .filter(c -> c.getRank() == rank && c.getSuit() == suit)
+                    .findFirst();
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
+    }
+
+    // ==========================================================
+    // INYECCIÓN DE DEPENDENCIAS
+    // ==========================================================
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
-
-        // Llamar a la carga de datos AQUÍ, donde 'gameState' ya no es NULL.
         this.loadGameView();
     }
 
@@ -30,50 +99,57 @@ public class GamePlayController {
         this.navigationManager = navigationManager;
     }
 
-
-    // Nuevo método para cargar o refrescar la vista del juego
-    private void loadGameView() {
-        if (gameWebView != null && gameState != null) {
-            WebEngine engine = gameWebView.getEngine();
-            // Carga el contenido HTML generado con los datos del GameState
-            engine.loadContent(generarHtmlBase());
-        } else {
-            System.err.println("Advertencia: No se pudo cargar la vista, GameState o WebView es NULL.");
+    // ==========================================================
+    // HANDLERS FXML
+    // ==========================================================
+    @FXML
+    private void handleBarajar() {
+        if (gameState != null) {
+            gameState.barajar();
+            loadGameView();
+            if (barajarButton != null) barajarButton.setDisable(true);
         }
     }
 
-
-    private String generarHtmlBase() {
-        // Esta comprobación redundante pero segura.
-        if (gameState == null) return "<html><body><h2>Error de carga: Estado de juego ausente.</h2></body></html>";
-
-        StringBuilder cartasHtml = new StringBuilder();
-
-        // Genera el HTML para cada carta de la mano
-        for (String carta : gameState.getMano()) {
-            cartasHtml.append("<div class='card'>").append(carta).append("</div>");
+    @FXML
+    private void handleRobarMano() {
+        if (gameState != null) {
+            gameState.robarManoInicial();
+            loadGameView();
         }
-
-        // Estructura HTML para mostrar las cartas
-        return """
-                <html>
-                <head>
-                    <style>
-                        body { font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px; }
-                        .card { background: white; border: 1px solid #ccc; border-radius: 8px; padding: 10px; margin: 10px; display: inline-block; }
-                    </style>
-                </head>
-                <body>
-                    <h2>Tu Mano de Cartas</h2>
-                    <div class="card-container">
-                        %s
-                    </div>
-                </body>
-                </html>
-                """.formatted(cartasHtml.toString());
     }
 
-    // --- Manejadores de Eventos ---
+    @FXML
+    private void handleValidarSandwich() {
+        if (currentSelection != null && currentSelection.length == 3) {
+            List<Card> sandwich = new ArrayList<>();
+            Arrays.stream(currentSelection).forEach(cardId -> getCardFromId(cardId).ifPresent(sandwich::add));
+
+            if (sandwich.size() != 3) {
+                gameWebView.getEngine().executeScript("alert('Error: No se pudieron encontrar 3 cartas para validar.');");
+                return;
+            }
+
+            int robadas = gameState.intentarDescarte(sandwich);
+
+            String mensaje = (robadas > 0)
+                    ? String.format("¡Sándwich Válido! Has robado %d cartas.", robadas)
+                    : "Sándwich Inválido. Intenta de nuevo.";
+
+            currentSelection = null;
+            loadGameView();
+            gameWebView.getEngine().executeScript("alert('" + mensaje + "');");
+        }
+    }
+
+    @FXML
+    private void handleRestartGame() {
+        if (gameState != null) {
+            gameState.newGame();
+            loadGameView();
+            if (barajarButton != null) barajarButton.setDisable(false);
+        }
+    }
 
     @FXML
     private void handleBackToMenu() {
@@ -82,12 +158,179 @@ public class GamePlayController {
         }
     }
 
-    @FXML
-    private void handleRestartGame() {
-        if (gameState != null) {
-            gameState.newGame();
-            // Vuelve a cargar la vista con el estado de juego reseteado
-            loadGameView();
+    // ==========================================================
+    // WEBVIEW RENDERING
+    // ==========================================================
+    private void loadGameView() {
+        if (gameWebView != null && gameState != null) {
+            WebEngine engine = gameWebView.getEngine();
+
+            engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+                if (newState == Worker.State.SUCCEEDED) {
+                    JSObject window = (JSObject) engine.executeScript("window");
+                    window.setMember("javaBridge", jsBridge); // ✅ Correcto
+                }
+            });
+
+            engine.loadContent(generarHtmlBase());
+
+            Platform.runLater(() -> {
+                if (estadoSeleccionLabel != null)
+                    estadoSeleccionLabel.setText("Seleccionadas: 0 / 3");
+                if (validarSandwichButton != null)
+                    validarSandwichButton.setDisable(true);
+            });
+        } else {
+            System.err.println("⚠️ Advertencia: GameState o WebView es NULL.");
         }
+    }
+
+    private String generarHtmlBase() {
+        if (gameState == null) return "<html><body><h2>Error de carga: Estado de juego ausente.</h2></body></html>";
+
+        // 1. OBTENER LOS DATOS HTML
+        // La caja se muestra boca arriba (como se solicitó).
+        String cajaHtml = generarContenedorHtml("Caja", gameState.getCaja(), "caja-container", false, true);
+
+        // El mazo como pila (boceto).
+        String mazoHtml = generarContenedorPilaHtml("Mazo Barajado", gameState.getMazo().size(), "mazo-container");
+
+        // Mano es interactiva y boca arriba.
+        String manoHtml = generarContenedorHtml("Tu Mano (Clic para seleccionar)", gameState.getMano(), "mano-container", true, true);
+
+        // Pozo es boca arriba y no interactivo.
+        String pozoHtml = generarContenedorHtml("Pozo (Descartadas)", gameState.getPozo(), "pozo-container", false, true);
+
+
+
+        // 2. CÓDIGO JAVASCRIPT (MODIFICADO)
+        String jsCode = """
+            <script>
+                let seleccionadas = [];
+                const manoContainer = document.getElementById('mano-container');
+                // Función para limpiar todos los bordes dorados
+                function limpiarBordes() {
+                    if (manoContainer) {
+                        manoContainer.querySelectorAll('.card-wrapper').forEach(card => {
+                            card.style.border = 'none';
+                        });
+                    }
+                }
+                // ⚠️ Se ejecuta al cargar el HTML para limpiar cualquier estado visual previo.
+                limpiarBordes(); 
+                
+                // 1. Manejar Clic en las Cartas de la Mano
+                if (manoContainer) {
+                    manoContainer.addEventListener('click', (event) => {
+                        let cardElement = event.target.closest('.card-wrapper');
+                        if (!cardElement || !manoContainer.contains(cardElement)) return;
+            
+                        const cardId = cardElement.getAttribute('data-card-id');
+                        if (!cardId) return;
+            
+                        if (seleccionadas.includes(cardId)) {
+                            // Deseleccionar
+                            seleccionadas = seleccionadas.filter(id => id !== cardId);
+                            cardElement.style.border = 'none';
+                        } else if (seleccionadas.length < 3) {
+                            // Seleccionar
+                            seleccionadas.push(cardId);
+                            cardElement.style.border = '4px solid gold';
+                        }
+                        
+                        // LLAMADA CLAVE: Notifica a JavaFX sobre la nueva selección
+                        window.javaBridge.actualizarControles(seleccionadas.join(','));
+
+                    });
+                }
+            </script>
+            """;
+
+        // 3. ESTILOS CSS
+        String styles = """
+            <style>
+                body { font-family: Arial, sans-serif; background-color: #202020; color: white; padding: 20px; }
+                .contenedor { border: 1px solid #444; border-radius: 8px; padding: 10px; margin-bottom: 20px; background-color: #303030; }
+                .card-container { display: flex; flex-wrap: wrap; justify-content: flex-start; }
+                .card-wrapper { 
+                    width: 80px; height: 120px; margin: 5px; 
+                    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+                    border-radius: 5px; overflow: hidden; cursor: pointer;
+                    transition: border 0.1s;
+                }
+                .card-wrapper img { width: 100%%; height: 100%%; object-fit: fill; } 
+            </style>
+            """;
+
+        // 4. ENSAMBLAJE FINAL DEL HTML
+        return String.format("""
+            <html>
+            <head>
+                %s </head>
+            <body>
+                <h1>THE SANDWICH GUY - ¡A Jugar!</h1>
+        
+                <div style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+                    %s %s </div>
+        
+                <h2>Tu Juego</h2>
+                %s %s %s </body>
+            </html>
+        """, styles, cajaHtml, mazoHtml, manoHtml, pozoHtml, jsCode);
+    }
+
+    private String generarContenedorPilaHtml(String titulo, int cantidadCartas, String containerId) {
+        StringBuilder contenidoHtml = new StringBuilder();
+
+        if (cantidadCartas == 0) {
+            contenidoHtml.append("<div style='color: #888; padding: 10px;'>Vacío.</div>");
+        } else {
+            String dorsoHtml = cardResourceLoader.generateCardBackHtml();
+
+            contenidoHtml.append(String.format("<div class='card-wrapper' style='position: relative; width: 80px; height: 120px; margin: 5px;'> %s </div>", dorsoHtml));
+
+            contenidoHtml.append(String.format("<div style='margin-top: 10px; font-size: 1.1em; color: #FFD700;'>%d cartas</div>",
+                    cantidadCartas));
+        }
+
+        return String.format("""
+                    <div id='%s' class='contenedor'>
+                        <h3>%s</h3>
+                        <div class='card-container' style='justify-content: center;'>%s</div>
+                    </div>
+                """, containerId, titulo, contenidoHtml.toString());
+    }
+
+    private String generarContenedorHtml(String titulo, List<Card> cartas, String containerId, boolean isInteractive, boolean isFaceUp) {
+        StringBuilder cartasHtml = new StringBuilder();
+
+        if (cartas.isEmpty()) {
+            cartasHtml.append("<div style='color: #888; padding: 10px;'>Vacío.</div>");
+        } else {
+            for (Card card : cartas) {
+                String cardId = card.getRank().toString() + "_" + card.getSuit().toString();
+                String dataAttribute = isInteractive ? "data-card-id='" + cardId + "'" : "";
+
+                String cardHtml;
+                if (isFaceUp) {
+                    cardHtml = cardResourceLoader.generateCardHtml(
+                            card.getSuit().toString().toLowerCase(),
+                            card.getRank()
+                    );
+                } else {
+                    cardHtml = cardResourceLoader.generateCardBackHtml();
+                }
+
+                cartasHtml.append(String.format("<div class='card-wrapper' %s>%s</div>",
+                        dataAttribute, cardHtml));
+            }
+        }
+
+        return String.format("""
+                    <div id='%s' class='contenedor'>
+                        <h3>%s (%d Cartas)</h3>
+                        <div class='card-container'>%s</div>
+                    </div>
+                """, containerId, titulo, cartas.size(), cartasHtml.toString());
     }
 }

@@ -8,6 +8,7 @@ module com.example.proyecto {
     requires org.kordamp.bootstrapfx.core;
     requires com.almasb.fxgl.all;
     requires java.desktop;
+    requires jdk.jsobject;
 
     opens com.example.proyecto to javafx.fxml;
     exports com.example.proyecto;
