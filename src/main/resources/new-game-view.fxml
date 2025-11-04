@@ -5,6 +5,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+
 
 <VBox VBox.vgrow="ALWAYS" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyecto.NewGameController" spacing="8" style="-fx-padding: 10; -fx-background-color: #ffffff; -fx-font-size: 13px; -fx-border-color: #cccccc;">
 
@@ -12,22 +15,32 @@
         <Button fx:id="btnBackToMenu" onAction="#handleBackToMenu" style="-fx-font-size: 14px;" text="← Volver al Menú" />
     </HBox>
 
-    <Label
-            alignment="CENTER"
-            contentDisplay="CENTER"
-            textAlignment="CENTER"
-            text="The Sandwich Game "
-            style="
-        -fx-background-color: #c0df85;
-        -fx-font-size: 52px;
-        -fx-font-weight: bold;
-        -fx-text-fill: #1a1a1d;
-        -fx-padding: 15;
-        -fx-border-radius: 10;
-        -fx-background-radius: 10;
-        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0, 2, 3);
-    "
-    />
+    <!-- Contenedor para el título + imagen -->
+    <HBox alignment="TOP_LEFT" spacing="15">
+        <Label
+                alignment="CENTER"
+                textAlignment="CENTER"
+                text="The Sandwich Guy"
+                style="
+                -fx-background-color: #c0df85;
+                -fx-font-size: 52px;
+                -fx-font-weight: bold;
+                -fx-text-fill: #1a1a1d;
+                -fx-padding: 15;
+                -fx-border-radius: 10;
+                -fx-background-radius: 10;
+                -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 10, 0, 2, 3);
+            "
+        />
+        <ImageView fitWidth="100" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 10, 0, 2, 3);">
+            <image>
+                <Image url="@/ui/sandwich.png" />
+            </image>
+        </ImageView>
+    </HBox>
+
+
+
     <Button onAction="#handlePlay" alignment="TOP_LEFT" contentDisplay="CENTER" mnemonicParsing="false" text="PLAY" />
 
     <Label alignment="CENTER" contentDisplay="BOTTOM" graphicTextGap="5.0" nodeOrientation="LEFT_TO_RIGHT" style="-fx-font-size: 30px;" text="Instrucciones" />
