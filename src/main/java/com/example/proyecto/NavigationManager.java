@@ -23,7 +23,7 @@ public class NavigationManager {
             controller.setNavigationManager(this);
 
             primaryStage.setScene(scene);
-            primaryStage.setFullScreen(true);
+            primaryStage.setFullScreen(false);
             primaryStage.show();
 
         } catch (IOException e) {
@@ -40,7 +40,7 @@ public class NavigationManager {
             controller.setNavigationManager(this);
 
             primaryStage.setScene(scene);
-            primaryStage.setFullScreen(true);
+            primaryStage.setFullScreen(false);
             primaryStage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -56,7 +56,7 @@ public class NavigationManager {
         controller.setNavigationManager(this);
 
         primaryStage.setScene(scene);
-        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreen(false);
         primaryStage.show();
 
         } catch (IOException e) {

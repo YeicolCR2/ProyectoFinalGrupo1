@@ -24,7 +24,6 @@ public class CardResourceLoader {
      */
     public URL getCardResourceUrl(String suit, Rank rank) {
         String fileName = config.getCardFileName(suit, rank);
-        // Asegúrate de que config.getBasePath() sea correcto (ej: /cards/)
         String path = config.getBasePath() + fileName;
         URL url = getClass().getResource(path);
 

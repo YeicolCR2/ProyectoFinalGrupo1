@@ -28,7 +28,6 @@ public class HtmlTemplateBuilder {
         return getHtmlHeader() +
                 getCssStyles() +
                 getStyleFooter() +
-                getBodyStart() +
                 generateCardsGrid() +
                 getHtmlFooter();
     }
@@ -92,14 +91,6 @@ public class HtmlTemplateBuilder {
         """;
     }
 
-    private String getBodyStart() {
-        return """
-        <body>
-        <div class="header-controls">
-          <button onclick="alert('alerta')">Crear Nueva Partida</button>
-        </div>
-        """;
-    }
 
     private String generateCardsGrid() {
         StringBuilder grid = new StringBuilder();

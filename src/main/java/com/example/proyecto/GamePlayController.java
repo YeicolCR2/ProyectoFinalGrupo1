@@ -42,6 +42,10 @@ public class GamePlayController {
     @FXML
     private Button validarSandwichButton;
 
+    @FXML
+    private Button verMazoButton;
+
+
     // ==========================================================
     // JS-JAVA BRIDGE: CLASE EXPUESTA A JAVASCRIPT
     // ==========================================================
@@ -189,7 +193,7 @@ public class GamePlayController {
         if (gameState == null) return "<html><body><h2>Error de carga: Estado de juego ausente.</h2></body></html>";
 
         // 1. OBTENER LOS DATOS HTML
-        // La caja se muestra boca arriba (como se solicitó).
+        // La caja se muestra boca arriba
         String cajaHtml = generarContenedorHtml("Caja", gameState.getCaja(), "caja-container", false, true);
 
         // El mazo como pila (boceto).
@@ -202,8 +206,6 @@ public class GamePlayController {
         String pozoHtml = generarContenedorHtml("Pozo (Descartadas)", gameState.getPozo(), "pozo-container", false, true);
 
 
-
-        // 2. CÓDIGO JAVASCRIPT (MODIFICADO)
         String jsCode = """
             <script>
                 let seleccionadas = [];
@@ -217,7 +219,7 @@ public class GamePlayController {
                     }
                 }
                 // ⚠️ Se ejecuta al cargar el HTML para limpiar cualquier estado visual previo.
-                limpiarBordes(); 
+                limpiarBordes();
                 
                 // 1. Manejar Clic en las Cartas de la Mano
                 if (manoContainer) {
@@ -277,6 +279,171 @@ public class GamePlayController {
                 %s %s %s </body>
             </html>
         """, styles, cajaHtml, mazoHtml, manoHtml, pozoHtml, jsCode);
+    }
+
+
+//    @FXML
+//    private void handleVerMazo() {
+//        if (gameState == null || gameWebView == null) return;
+//
+//        List<Card> mazo = gameState.getMazo();
+//        if (mazo.isEmpty()) {
+//            gameWebView.getEngine().executeScript("alert('El mazo está vacío.');");
+//            return;
+//        }
+//
+//        // Generar el HTML de las cartas del mazo
+//        StringBuilder htmlCartas = new StringBuilder(
+//                "<div style='display:flex; flex-wrap:wrap; justify-content:center; gap:4px;'>"
+//        );
+//        for (Card card : mazo) {
+//            String cardHtml = cardResourceLoader.generateCardHtml(
+//                    card.getSuit().toString().toLowerCase(),
+//                    card.getRank()
+//            );
+//            htmlCartas.append("<div style='width:60px; height:90px;'>").append(cardHtml).append("</div>");
+//        }
+//        htmlCartas.append("</div>");
+//
+//
+//        String script = String.format("""
+//        const overlay = document.createElement('div');
+//        overlay.style.position = 'fixed';
+//        overlay.style.top = 0;
+//        overlay.style.left = 0;
+//        overlay.style.width = '100%%';
+//        overlay.style.height = '100%%';
+//        overlay.style.background = 'rgba(0,0,0,0.9)';
+//        overlay.style.zIndex = 9999;
+//        overlay.style.overflowY = 'auto';
+//        overlay.style.transition = 'transform 0.1s ease-out';
+//
+//        overlay.innerHTML = `
+//            <div style='padding:15px; text-align:center; color:white; font-family:Arial;'>
+//                <h2>Mazo Actual (Modo Trampa)</h2>
+//                <p style='font-size:14px; color:#ccc;'>(Usa Ctrl + rueda del mouse para hacer zoom)</p>
+//                <button id='cerrarMazo'
+//                    style='background:red; color:white; font-size:16px; padding:5px 10px;
+//                           border:none; border-radius:5px; cursor:pointer; margin-bottom:10px;'>
+//                    Cerrar
+//                </button>
+//                %s
+//            </div>`;
+//
+//        document.body.appendChild(overlay);
+//        document.getElementById('cerrarMazo').onclick = () => overlay.remove();
+//
+//        let scale = 1;
+//        overlay.addEventListener('wheel', (e) => {
+//            if (e.ctrlKey) {
+//                e.preventDefault();
+//                scale += e.deltaY * -0.001;
+//                scale = Math.min(Math.max(0.5, scale), 2);
+//                overlay.style.transform = `scale(${scale})`;
+//                overlay.style.transformOrigin = 'center top';
+//            }
+//        });
+//    """, htmlCartas);
+//
+//        gameWebView.getEngine().executeScript(script);
+//    }
+
+    /**
+     * el botón para hacer trampa :v
+     */
+    @FXML
+    private void handleVerMazo() {
+        if (gameState == null || gameWebView == null) return;
+
+        List<Card> mazo = gameState.getMazo();
+        if (mazo.isEmpty()) {
+            gameWebView.getEngine().executeScript("alert('El mazo está vacío.');");
+            return;
+        }
+
+        // Generar el HTML de las cartas
+        StringBuilder htmlCartas = new StringBuilder("<div id='cartasContainer'>");
+        for (Card card : mazo) {
+            String cardHtml = cardResourceLoader.generateCardHtml(
+                    card.getSuit().toString().toLowerCase(),
+                    card.getRank()
+            );
+            htmlCartas.append("<div class='card-item'>").append(cardHtml).append("</div>");
+        }
+        htmlCartas.append("</div>");
+
+        // Crear overlay con animación suave
+        String script = String.format("""
+        const overlay = document.createElement('div');
+        overlay.style.position = 'fixed';
+        overlay.style.top = 0;
+        overlay.style.left = 0;
+        overlay.style.width = '100%%';
+        overlay.style.height = '100%%';
+        overlay.style.background = 'rgba(0,0,0,0.93)';
+        overlay.style.zIndex = 9999;
+        overlay.style.display = 'flex';
+        overlay.style.flexDirection = 'column';
+        overlay.style.justifyContent = 'flex-start';
+        overlay.style.alignItems = 'center';
+        overlay.style.padding = '30px 0';
+        overlay.style.overflow = 'hidden';
+        overlay.innerHTML = `
+            <style>
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: scale(0.6) translateY(50px); }
+                    to { opacity: 1; transform: scale(1) translateY(0); }
+                }
+                #cartasContainer {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 8px;
+                    width: 95%%;
+                    max-width: 1300px;
+                    margin-top: 10px;
+                }
+                .card-item {
+                    width: 75px;
+                    height: 110px;
+                    animation: fadeIn 0.3s ease forwards;
+                    opacity: 0;
+                }
+                .card-item:nth-child(n) {
+                    animation-delay: calc(var(--i) * 0.02s);
+                }
+                button#cerrarMazo {
+                    background: #ff3333;
+                    color: white;
+                    font-size: 16px;
+                    padding: 6px 12px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    margin-bottom: 12px;
+                }
+                h2 {
+                    color: white;
+                    font-family: 'Arial';
+                    font-size: 22px;
+                    margin-bottom: 5px;
+                }
+            </style>
+            <h2>Mazo Actual (Modo Trampa)</h2>
+            <button id='cerrarMazo'>Cerrar</button>
+            %s
+        `;
+        document.body.appendChild(overlay);
+
+        // Animación secuencial
+        const cards = overlay.querySelectorAll('.card-item');
+        cards.forEach((c, i) => c.style.setProperty('--i', i));
+
+        // Cerrar overlay
+        document.getElementById('cerrarMazo').onclick = () => overlay.remove();
+    """, htmlCartas);
+
+        gameWebView.getEngine().executeScript(script);
     }
 
     private String generarContenedorPilaHtml(String titulo, int cantidadCartas, String containerId) {
