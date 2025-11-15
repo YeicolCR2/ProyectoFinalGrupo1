@@ -3,6 +3,7 @@ package com.example.proyecto;
 import com.example.proyecto.enums.Rank;
 import com.example.proyecto.enums.Suit;
 import java.util.List;
+import com.example.proyecto.enums.GameActionListener;
 
 public class GameState {
 
@@ -12,6 +13,7 @@ public class GameState {
     private final Mano mano;
     private final Pozo pozo;
     private final CardDeckConfig config;
+    private GameActionListener listener;
 
     // Constante para el cálculo de la diferencia (basado en 10 valores por palo)
     private static final int MAX_RANK_VALUE = 10;
@@ -22,6 +24,10 @@ public class GameState {
         this.mano = new Mano();
         this.pozo = new Pozo();
         this.config = new CardDeckConfig();
+    }
+
+    public void setListener(GameActionListener listener) {
+        this.listener = listener;
     }
 
     public void newGame() {
@@ -56,7 +62,9 @@ public class GameState {
         mazo.addAll(caja.sacarTodas());
         mazo.barajar();
 
-        System.out.println("Barajado completado. Mazo con " + mazo.size() + " cartas.");
+        if (listener != null) {
+            listener.onMazoBarajado(mazo.size());
+        }
     }
 
     /**
@@ -67,7 +75,9 @@ public class GameState {
         int numToRob = Math.min(8, mazo.size());
         List<Card> cartasRobadas = mazo.robarVarias(numToRob);
         mano.addAll(cartasRobadas);
-        System.out.println("Robadas " + numToRob + " cartas a la Mano.");
+        if (listener != null) {
+            listener.onManoRobada(numToRob);
+        }
     }
 
     /**

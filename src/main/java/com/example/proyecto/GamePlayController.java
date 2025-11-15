@@ -1,5 +1,6 @@
 package com.example.proyecto;
 
+import com.example.proyecto.enums.GameActionListener;
 import com.example.proyecto.enums.Rank;
 import com.example.proyecto.enums.Suit;
 import javafx.application.Platform;
@@ -16,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class GamePlayController {
+public class GamePlayController implements GameActionListener {
 
     private GameState gameState;
     private NavigationManager navigationManager;
@@ -44,6 +45,10 @@ public class GamePlayController {
 
     @FXML
     private Button verMazoButton;
+
+    @FXML
+    private Label messageLabel;
+
 
 
     // ==========================================================
@@ -96,6 +101,7 @@ public class GamePlayController {
     // ==========================================================
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+        this.gameState.setListener(this);
         this.loadGameView();
     }
 
@@ -130,19 +136,38 @@ public class GamePlayController {
             Arrays.stream(currentSelection).forEach(cardId -> getCardFromId(cardId).ifPresent(sandwich::add));
 
             if (sandwich.size() != 3) {
-                gameWebView.getEngine().executeScript("alert('Error: No se pudieron encontrar 3 cartas para validar.');");
+                if (messageLabel != null) {
+                    messageLabel.setText("❌ Error: No se pudieron encontrar 3 cartas.");
+                } else {
+                    gameWebView.getEngine().executeScript("alert('Error: No se pudieron encontrar 3 cartas para validar.');");
+                }
                 return;
             }
 
             int robadas = gameState.intentarDescarte(sandwich);
 
-            String mensaje = (robadas > 0)
-                    ? String.format("¡Sándwich Válido! Has robado %d cartas.", robadas)
-                    : "Sándwich Inválido. Intenta de nuevo.";
+            String mensaje;
+            String estilo;
 
+            if (robadas > 0){
+                mensaje = String.format("🎉 Sándwich Válido. Has robado %d cartas.", robadas);
+                estilo = "#3CB371"; // Verde
+            } else {
+                mensaje = "🤷‍♂️ Sándwich Inválido. Intenta de nuevo.";
+                estilo = "#DC143C"; // Rojo
+            }
+
+            Platform.runLater(() -> {
+                if (messageLabel != null) {
+                    messageLabel.setText(mensaje);
+                    // Opcional: cambiar color temporalmente.
+                    messageLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: " + estilo + ";");
+                } else {
+                    gameWebView.getEngine().executeScript("alert('" + mensaje + "');");
+                }
+            });
             currentSelection = null;
             loadGameView();
-            gameWebView.getEngine().executeScript("alert('" + mensaje + "');");
         }
     }
 
@@ -160,6 +185,30 @@ public class GamePlayController {
         if (navigationManager != null) {
             navigationManager.navigateToMenu();
         }
+    }
+
+
+    // ==========================================================
+    // Implementación del interface
+    // ==========================================================
+    @Override
+    public void onMazoBarajado(int numCartas) {
+        // Ejecutar en el hilo de JavaFX
+        Platform.runLater(() -> {
+            if (messageLabel != null) {
+                messageLabel.setText(String.format("✅ Barajado completo. Mazo: %d cartas.", numCartas));
+            }
+        });
+    }
+
+    @Override
+    public void onManoRobada(int numCartas) {
+        // Ejecutar en el hilo de JavaFX
+        Platform.runLater(() -> {
+            if (messageLabel != null) {
+                messageLabel.setText(String.format("👉 Robadas %d cartas a la Mano.", numCartas));
+            }
+        });
     }
 
     // ==========================================================
