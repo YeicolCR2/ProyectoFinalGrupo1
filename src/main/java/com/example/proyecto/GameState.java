@@ -175,7 +175,17 @@ public class GameState {
      * Saca 'n' cartas del Mazo y las agrega a la Mano.
      */
     private int robarCartas(int n) {
-        List<Card> cartasRobadas = mazo.robarVarias(n);
+        int espacioDisponible = Mano.getMaxCartas() - mano.size();
+        if (espacioDisponible <= 0) {
+            return 0; // ya llena, no robamos nada
+        }
+
+        int cantidadARobar = Math.min(n, Math.min(espacioDisponible, mazo.size()));
+        if (cantidadARobar <= 0) {
+            return 0;
+        }
+
+        List<Card> cartasRobadas = mazo.robarVarias(cantidadARobar);
         mano.addAll(cartasRobadas);
         return cartasRobadas.size();
     }

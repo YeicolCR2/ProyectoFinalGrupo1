@@ -5,17 +5,27 @@ import java.util.List;
 
 public class Mano {
     private final List<Card> cartas;
+    private static final int MAX_CARTAS = 8; // límite según especificación del juego
 
     public Mano() {
         this.cartas = new ArrayList<>();
     }
 
     public void add(Card carta) {
+        if (cartas.size() >= MAX_CARTAS) {
+            return;
+        }
         cartas.add(carta);
     }
 
     public void addAll(List<Card> otras) {
-        cartas.addAll(otras);
+
+        for (Card c : otras) {
+            if (cartas.size() >= MAX_CARTAS) {
+                break;
+            }
+            cartas.add(c);
+        }
     }
 
     public void remove(Card carta) {
@@ -48,5 +58,9 @@ public class Mano {
 
     public List<Card> obtenerCartas() {
         return new ArrayList<>(cartas);
+    }
+
+    public static int getMaxCartas() {
+        return MAX_CARTAS;
     }
 }
