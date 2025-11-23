@@ -252,7 +252,7 @@ public class GamePlayController implements GameActionListener {
         String manoHtml = generarContenedorHtml("Tu Mano (Clic para seleccionar)", gameState.getMano(), "mano-container", true, true);
 
         // Pozo es boca arriba y no interactivo.
-        String pozoHtml = generarContenedorHtml("Pozo (Descartadas)", gameState.getPozo(), "pozo-container", false, true);
+        String pozoHtml = generarContenedorHtml("Pozo (Descartadas)", gameState.getPozo(), "pozo-container", false, false);
 
 
         String jsCode = """
