@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.scene.image.*?>
+
+<VBox xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.proyecto.NewGameController"
+      spacing="12"
+      style="-fx-padding: 20; -fx-background-color: #fafafa; -fx-font-family: 'Segoe UI';">
+
+    <!-- Barra superior -->
+    <HBox spacing="10" alignment="CENTER_LEFT"
+          style="-fx-background-color: #7ddf64; -fx-padding: 10; -fx-background-radius: 6;">
+        <Button fx:id="btnBackToMenu" onAction="#handleBackToMenu"
+                text="← Volver al Menú"
+                style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-background-color: white;
+                       -fx-text-fill: #1a1a1d; -fx-background-radius: 5;" />
+    </HBox>
+
+    <!-- Título y logo -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Label text="The Sandwich Guy"
+               style="-fx-font-size: 44px; -fx-font-weight: bold; -fx-text-fill: #1a1a1d;" />
+        <ImageView fitWidth="80" preserveRatio="true">
+            <image>
+                <Image url="@/ui/sandwich.png" />
+            </image>
+        </ImageView>
+    </HBox>
+
+    <!-- Botón de jugar -->
+    <Button text="JUGAR"
+            onAction="#handlePlay"
+            style="-fx-background-color: #7ddf64; -fx-text-fill: white;
+                   -fx-font-size: 20px; -fx-font-weight: bold; -fx-padding: 10 30;
+                   -fx-background-radius: 10; -fx-cursor: hand;" />
+
+    <!-- Sección de instrucciones -->
+    <Label text="📜 Instrucciones"
+           style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #1a1a1d;
+                  -fx-padding: 15 0 5 0;" />
+
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-font-size: 26px">
+        <VBox spacing="10" style="-fx-padding: 10 15;">
+            <Label text="Bienvenido a The Sandwich Game" style="-fx-font-weight: bold; -fx-font-size: 18px;" />
+
+            <Label text="¿Cómo empezar?" style="-fx-text-fill: #7ddf64; -fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Label text="- Crea una partida nueva para barajar un mazo de 52 cartas." />
+            <Label text="- Recibirás 8 cartas visibles en tu Mano." />
+
+            <Label text="¿Qué tengo que hacer?" style="-fx-text-fill: #7ddf64; -fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Label text="- Forma un sándwich eligiendo 3 cartas que tengan una diferencia constante entre sus valores (puede “dar la vuelta” de K a A y 2)." />
+            <Label text="- Cuando formes un sándwich válido, descártalo y toma cartas nuevas del mazo." />
+
+            <Label text="¿Cuántas cartas puedo tomar?" style="-fx-text-fill: #7ddf64; -fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Label text="- Si las 3 cartas son del mismo palo: toma hasta 4 cartas." />
+            <Label text="- Si son del mismo color (pero diferente palo): toma hasta 3 cartas." />
+            <Label text="- Si son de colores distintos: toma hasta 2 cartas." />
+            <Label text="- Recuerda: nunca tengas más de 8 cartas en tu Mano." />
+
+            <Label text="¿Qué botones puedo usar?" style="-fx-text-fill: #7ddf64; -fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Label text="- Ordenar: organiza tus cartas de menor a mayor." />
+            <Label text="- Validar: comprueba si tienes algún sándwich válido." />
+            <Label text="- Guardar: guarda tu partida para continuar después." />
+            <Label text="- Menú: vuelve al menú principal." />
+
+            <Label text="¿Cuándo gano o pierdo?" style="-fx-text-fill: #7ddf64; -fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Label text="- Ganas cuando se acabe el mazo." />
+            <Label text="- Pierdes si no puedes formar ningún sándwich válido con las cartas que tienes." />
+
+            <Label text="¿Listo para jugar? ¡Buena suerte y diviértete!"
+                   style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+        </VBox>
+    </ScrollPane>
+
+
+</VBox>

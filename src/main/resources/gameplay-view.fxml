@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+
+<VBox xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.proyecto.GamePlayController"
+      spacing="20"
+      alignment="CENTER"
+      style="-fx-background-color: #1e1e1e; -fx-padding: 20;">
+
+    <HBox alignment="CENTER" spacing="15"
+          style="-fx-background-color: #2b2b2b; -fx-padding: 10 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 2);">
+        <Button fx:id="barajarButton"
+                onAction="#handleBarajar"
+                prefHeight="50"
+                prefWidth="230"
+                style="-fx-font-size: 15px; -fx-background-color: #3A81F0; -fx-text-fill: white; -fx-background-radius: 8;"
+                text="Barajar Cartas (Caja → Mazo)" />
+
+        <Button onAction="#handleRobarMano"
+                prefHeight="50"
+                prefWidth="210"
+                style="-fx-font-size: 15px; -fx-background-color: #3CB371; -fx-text-fill: white; -fx-background-radius: 8;"
+                text="Robar 8 Cartas (Mano Inicial)" />
+
+        <Separator orientation="VERTICAL" prefHeight="40" />
+
+        <Label fx:id="messageLabel"
+               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1E90FF;"
+               text="" />
+
+        <Separator orientation="VERTICAL" prefHeight="40" />
+        <Label fx:id="estadoSeleccionLabel"
+               style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #FFD700;"
+               text="Seleccionadas: 0 / 3" />
+
+        <Button fx:id="validarSandwichButton"
+                onAction="#handleValidarSandwich"
+                disable="true"
+                style="-fx-font-size: 15px; -fx-background-color: #FFD700; -fx-text-fill: #1e1e1e; -fx-font-weight: bold; -fx-background-radius: 8;"
+                text="Validar Sándwich" />
+    </HBox>
+
+    <Button fx:id="verMazoButton"
+            onAction="#handleVerMazo"
+            prefHeight="50"
+            prefWidth="180"
+            style="-fx-background-color: #1E90FF; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 5, 0, 0, 1);"
+            text="👀 Ver Mazo" />
+
+    <WebView fx:id="gameWebView"
+             prefHeight="580"
+             prefWidth="920"
+             VBox.vgrow="ALWAYS"
+             style="-fx-background-color: #181818; -fx-border-color: #333333; -fx-border-radius: 8; -fx-background-radius: 8;" />
+
+    <HBox alignment="CENTER" spacing="25">
+        <Button onAction="#handleRestartGame"
+                style="-fx-background-color: #FFB347; -fx-text-fill: #1e1e1e; -fx-font-size: 15px; -fx-font-weight: bold; -fx-background-radius: 8;"
+                text="🔄 Reiniciar" />
+
+        <Button onAction="#handleBackToMenu"
+                style="-fx-background-color: #DC143C; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-background-radius: 8;"
+                text="🏠 Menú Principal" />
+    </HBox>
+
+</VBox>

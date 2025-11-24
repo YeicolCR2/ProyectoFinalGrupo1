@@ -2,6 +2,7 @@ package com.example.proyecto;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
@@ -17,18 +18,33 @@ public class HelloController implements Initializable {
     @FXML
     private WebView svgView;
 
+    @FXML
+    private Button btnBackToMenu;
+
     private final HtmlTemplateBuilder templateBuilder;
+    private NavigationManager navigationManager;
 
     public HelloController() {
-        CardDeckConfig config = new CardDeckConfig(); //Carga las configuraciones, saber las rutas, nombres de las cartas
-        CardResourceLoader resourceLoader = new CardResourceLoader(config); //carga las cartas, las recibe todas y crea el html de las cartas indiviodual
+        CardDeckConfig config = new CardDeckConfig();
+        CardResourceLoader resourceLoader = new CardResourceLoader(config);
         this.templateBuilder = new HtmlTemplateBuilder(config, resourceLoader);
+    }
+
+    public void setNavigationManager(NavigationManager navigationManager) {
+        this.navigationManager = navigationManager;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         WebEngine engine = svgView.getEngine();
         String htmlContent = templateBuilder.buildFullHtml();
-        engine.loadContent(htmlContent, "text/html"); /*Start*/
+        engine.loadContent(htmlContent, "text/html");
+    }
+
+    @FXML
+    private void handleBackToMenu() {
+        if (navigationManager != null) {
+            navigationManager.navigateToMenu();
+        }
     }
 }
