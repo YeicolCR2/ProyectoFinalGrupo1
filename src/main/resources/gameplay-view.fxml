@@ -60,6 +60,15 @@
              style="-fx-background-color: #181818; -fx-border-color: #333333; -fx-border-radius: 8; -fx-background-radius: 8;" />
 
     <HBox alignment="CENTER" spacing="25">
+
+        <Button onAction="#handleSaveGame"
+                style="-fx-background-color: #6A5ACD; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-background-radius: 8;"
+                text="💾 Guardar" />
+
+        <Button onAction="#handleLoadGame"
+                style="-fx-background-color: #8A2BE2; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-background-radius: 8;"
+                text="📂 Cargar" />
+
         <Button onAction="#handleRestartGame"
                 style="-fx-background-color: #FFB347; -fx-text-fill: #1e1e1e; -fx-font-size: 15px; -fx-font-weight: bold; -fx-background-radius: 8;"
                 text="🔄 Reiniciar" />

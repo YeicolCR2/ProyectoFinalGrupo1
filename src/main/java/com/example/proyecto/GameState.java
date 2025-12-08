@@ -190,6 +190,25 @@ public class GameState {
         return cartasRobadas.size();
     }
 
+    public void setLoadedState(List<Card> loadedCaja, List<Card> loadedMazo,
+                               List<Card> loadedMano, List<Card> loadedPozo) {
+
+        // 🛑 Asegura que solo se limpia y rellena, sin llamar a newGame()
+        // 1. Limpiar las colecciones internas
+        this.caja.clear();
+        this.mazo.clear();
+        this.mano.clear();
+        this.pozo.clear();
+
+        // 2. Rellenar con los datos cargados
+        this.caja.addAll(loadedCaja);
+        this.mazo.addAll(loadedMazo);
+        this.mano.addAll(loadedMano);
+        this.pozo.addAll(loadedPozo);
+
+        // Opcional: Aquí podrías disparar notificaciones si es necesario.
+    }
+
     // ==========================================================
     // GETTERS
     // ==========================================================

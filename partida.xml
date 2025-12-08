@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<gameState>
+    <caja/>
+    <mazo>
+        <card rank="KING" suit="CLUBS"/>
+        <card rank="FIVE" suit="HEARTS"/>
+        <card rank="NINE" suit="HEARTS"/>
+        <card rank="JACK" suit="SPADES"/>
+        <card rank="NINE" suit="DIAMONDS"/>
+        <card rank="FIVE" suit="SPADES"/>
+        <card rank="QUEEN" suit="HEARTS"/>
+        <card rank="EIGHT" suit="HEARTS"/>
+        <card rank="TEN" suit="CLUBS"/>
+        <card rank="ACE" suit="DIAMONDS"/>
+        <card rank="QUEEN" suit="DIAMONDS"/>
+        <card rank="TEN" suit="HEARTS"/>
+        <card rank="EIGHT" suit="CLUBS"/>
+        <card rank="EIGHT" suit="SPADES"/>
+        <card rank="TWO" suit="SPADES"/>
+        <card rank="NINE" suit="SPADES"/>
+        <card rank="FOUR" suit="HEARTS"/>
+        <card rank="EIGHT" suit="DIAMONDS"/>
+        <card rank="TWO" suit="CLUBS"/>
+        <card rank="SIX" suit="HEARTS"/>
+        <card rank="SIX" suit="SPADES"/>
+        <card rank="FOUR" suit="SPADES"/>
+        <card rank="THREE" suit="DIAMONDS"/>
+        <card rank="QUEEN" suit="CLUBS"/>
+        <card rank="SEVEN" suit="DIAMONDS"/>
+        <card rank="SEVEN" suit="CLUBS"/>
+        <card rank="ACE" suit="CLUBS"/>
+        <card rank="NINE" suit="CLUBS"/>
+        <card rank="SEVEN" suit="SPADES"/>
+        <card rank="THREE" suit="CLUBS"/>
+        <card rank="THREE" suit="HEARTS"/>
+        <card rank="FIVE" suit="CLUBS"/>
+        <card rank="FOUR" suit="CLUBS"/>
+        <card rank="FOUR" suit="DIAMONDS"/>
+    </mazo>
+    <mano>
+        <card rank="KING" suit="HEARTS"/>
+        <card rank="SIX" suit="CLUBS"/>
+        <card rank="TWO" suit="DIAMONDS"/>
+        <card rank="FIVE" suit="DIAMONDS"/>
+        <card rank="KING" suit="DIAMONDS"/>
+        <card rank="THREE" suit="SPADES"/>
+        <card rank="SIX" suit="DIAMONDS"/>
+    </mano>
+    <pozo>
+        <card rank="JACK" suit="CLUBS"/>
+        <card rank="QUEEN" suit="SPADES"/>
+        <card rank="KING" suit="SPADES"/>
+    </pozo>
+</gameState>
