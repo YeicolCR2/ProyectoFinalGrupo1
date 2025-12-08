@@ -17,6 +17,7 @@ public class GameState {
 
     // Constante para el cálculo de la diferencia (basado en 10 valores por palo)
     private static final int MAX_RANK_VALUE = 10;
+    private boolean manoInicialRobada = false;
 
     public GameState() {
         this.caja = new Caja();
@@ -43,6 +44,7 @@ public class GameState {
             }
         }
         llenarCaja();
+        manoInicialRobada = false;
     }
 
     public void llenarCaja(){
@@ -71,6 +73,11 @@ public class GameState {
      * Saca 8 cartas del Mazo y las pone en la Mano. (Parte del requisito inicial)
      */
     public void robarManoInicial() {
+        if (manoInicialRobada) {
+            System.out.println("Ya se robó la mano inicial de 8 cartas. Reinicia el juego para volver a hacerlo.");
+            return;
+        }
+        manoInicialRobada = true;
         mano.clear();
         int numToRob = Math.min(8, mazo.size());
         List<Card> cartasRobadas = mazo.robarVarias(numToRob);
@@ -205,8 +212,10 @@ public class GameState {
         this.mazo.addAll(loadedMazo);
         this.mano.addAll(loadedMano);
         this.pozo.addAll(loadedPozo);
+    }
 
-        // Opcional: Aquí podrías disparar notificaciones si es necesario.
+    public void ordenarManoPorRankAsc() {
+        mano.ordenarPorRankAsc();
     }
 
     // ==========================================================

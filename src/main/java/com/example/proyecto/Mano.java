@@ -59,7 +59,9 @@ public class Mano {
     public List<Card> obtenerCartas() {
         return new ArrayList<>(cartas);
     }
-
+    public void ordenarPorRankAsc() {
+        cartas.sort(java.util.Comparator.comparingInt(c -> c.getRank().ordinal()));
+    }
     public static int getMaxCartas() {
         return MAX_CARTAS;
     }

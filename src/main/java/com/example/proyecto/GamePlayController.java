@@ -8,6 +8,7 @@ import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import netscape.javascript.JSObject;
@@ -45,6 +46,9 @@ public class GamePlayController implements GameActionListener {
     private Button validarSandwichButton;
 
     @FXML
+    private TextArea permutacionesTextArea;
+
+    @FXML
     private Button verMazoButton;
 
     @FXML
@@ -64,10 +68,22 @@ public class GamePlayController implements GameActionListener {
 
             if (count == 3) {
                 currentSelection = seleccionadasString.split(",");
+                List<Card> seleccion = new ArrayList<>();
+                for (String id : currentSelection) {
+                    getCardFromId(id).ifPresent(seleccion::add);
+                }
+                if (permutacionesTextArea != null) {
+                    permutacionesTextArea.setVisible(true); // mostrar el área
+                }
+                mostrarPermutaciones(seleccion);
+                // aqui termina
             } else {
                 currentSelection = null;
+                if (permutacionesTextArea != null) {
+                    permutacionesTextArea.setVisible(false); // ocultar el área
+                    permutacionesTextArea.clear();
+                }
             }
-
             Platform.runLater(() -> {
                 if (estadoSeleccionLabel != null)
                     estadoSeleccionLabel.setText(String.format("Seleccionadas: %d / 3", count));
@@ -176,6 +192,7 @@ public class GamePlayController implements GameActionListener {
                     gameWebView.getEngine().executeScript("alert('" + mensaje + "');");
                 }
             });
+            mostrarPermutaciones(sandwich);
 
             currentSelection = null;
             loadGameView();
@@ -191,6 +208,85 @@ public class GamePlayController implements GameActionListener {
             if (barajarButton != null)
                 barajarButton.setDisable(false);
         }
+    }
+
+
+    private void mostrarPermutaciones(List<Card> seleccion) {
+        if (seleccion == null || seleccion.size() != 3) {
+            if (permutacionesTextArea != null) {
+                permutacionesTextArea.setText("⚠️ Selecciona exactamente 3 cartas para ver las permutaciones.");
+            }
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        List<List<Card>> permutaciones = generarPermutaciones(seleccion);
+
+        for (List<Card> perm : permutaciones) {
+            int cartasRobar = calcularCartasRobar(perm);
+            sb.append(perm.toString())
+                    .append(" → ")
+                    .append(cartasRobar)
+                    .append(" cartas\n");
+        }
+
+        if (permutacionesTextArea != null) {
+            permutacionesTextArea.setText(sb.toString());
+        }
+    }
+
+    // ✅ Este método usa recursión como estructura de búsqueda (árbol implícito).
+    // Cada llamada recursiva representa un nodo del árbol:
+    // - Nivel 1: primera carta elegida
+    // - Nivel 2: segunda carta elegida
+    // - Nivel 3: tercera carta elegida (hoja del árbol)
+    // Así se generan las 6 permutaciones posibles de la tripleta,
+    // y cada hoja contiene la tripleta y el número de cartas a tomar del mazo.
+    private List<List<Card>> generarPermutaciones(List<Card> cartas) {
+        List<List<Card>> resultado = new ArrayList<>();
+        backtrackPermutaciones(cartas, new ArrayList<>(), resultado);
+        return resultado;
+    }
+
+    private void backtrackPermutaciones(List<Card> cartas, List<Card> actual, List<List<Card>> resultado) {
+        if (actual.size() == cartas.size()) {
+            resultado.add(new ArrayList<>(actual)); // hoja del árbol
+            return;
+        }
+
+        for (Card c : cartas) {
+            if (!actual.contains(c)) {
+                actual.add(c); // elegir carta → bajar un nivel en el árbol
+                backtrackPermutaciones(cartas, actual, resultado);
+                actual.remove(actual.size() - 1); // retroceder → subir en el árbol
+            }
+        }
+    }
+
+    private int calcularCartasRobar(List<Card> tripleta) {
+        Card c1 = tripleta.get(0);
+        Card c2 = tripleta.get(1);
+        Card c3 = tripleta.get(2);
+
+
+        if (c1.getSuit() == c2.getSuit() && c2.getSuit() == c3.getSuit()) {
+            return 4;
+        } else if (mismoColor(c1, c2, c3)) {
+            return 3;
+        } else if (gameState.esSandwichValido(c1, c2, c3)) {
+            return 2;
+        }
+        return 0;
+    }
+
+    private boolean mismoColor(Card c1, Card c2, Card c3) {
+        boolean rojo = (c1.getSuit() == Suit.HEARTS || c1.getSuit() == Suit.DIAMONDS) &&
+                (c2.getSuit() == Suit.HEARTS || c2.getSuit() == Suit.DIAMONDS) &&
+                (c3.getSuit() == Suit.HEARTS || c3.getSuit() == Suit.DIAMONDS);
+        boolean negro = (c1.getSuit() == Suit.SPADES || c1.getSuit() == Suit.CLUBS) &&
+                (c2.getSuit() == Suit.SPADES || c2.getSuit() == Suit.CLUBS) &&
+                (c3.getSuit() == Suit.SPADES || c3.getSuit() == Suit.CLUBS);
+        return rojo || negro;
     }
 
     @FXML
@@ -248,6 +344,18 @@ public class GamePlayController implements GameActionListener {
         } catch (Exception e) {
             messageLabel.setText("❌ Error al cargar la partida.");
             e.printStackTrace();
+        }
+    }
+    @FXML
+    private void handleOrdenarMano() {
+        if (gameState != null) {
+            gameState.ordenarManoPorRankAsc();  // Ordena la lista interna de Mano
+            loadGameView();                     // Refresca la interfaz
+
+            if (messageLabel != null) {
+                messageLabel.setText("🃏 Mano ordenada ascendentemente.");
+                messageLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #00CED1;");
+            }
         }
     }
 

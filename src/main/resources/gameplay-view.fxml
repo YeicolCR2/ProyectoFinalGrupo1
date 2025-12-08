@@ -59,6 +59,24 @@
              VBox.vgrow="ALWAYS"
              style="-fx-background-color: #181818; -fx-border-color: #333333; -fx-border-radius: 8; -fx-background-radius: 8;" />
 
+    <TextArea fx:id="permutacionesTextArea"
+              prefHeight="180"
+              prefWidth="920"
+              editable="false"
+              wrapText="true"
+              visible="false"
+              style="
+              -fx-font-size: 15px;
+              -fx-font-family: 'Consolas';
+              -fx-control-inner-background: #2b2b2b;
+              -fx-text-fill: #00FF7F;
+              -fx-border-color: #444444;
+              -fx-border-radius: 8;
+              -fx-background-radius: 8;
+              -fx-padding: 10;
+              -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.35), 8, 0, 0, 2);
+          " />
+
     <HBox alignment="CENTER" spacing="25">
 
         <Button onAction="#handleSaveGame"
@@ -76,6 +94,10 @@
         <Button onAction="#handleBackToMenu"
                 style="-fx-background-color: #DC143C; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-background-radius: 8;"
                 text="🏠 Menú Principal" />
+
+        <Button onAction="#handleOrdenarMano"
+                style="-fx-background-color: #00CED1; -fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold; -fx-background-radius: 8;"
+                text="🃏 Ordenar Mano" />
     </HBox>
 
 </VBox>
