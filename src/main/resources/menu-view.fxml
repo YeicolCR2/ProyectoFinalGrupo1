@@ -23,7 +23,7 @@
             <Insets top="30.0" />
         </VBox.margin>
 
-        <Button fx:id="btnNewGame" onAction="#handleNewGame" style="-fx-font-size: 16px; -fx-min-width: 250px; -fx-min-height: 50px; -fx-background-color: c0df85;" text="Crear Nueva Partida" />
+        <Button fx:id="btnNewGame" onAction="#handleNewGame" style="-fx-font-size: 16px; -fx-min-width: 250px; -fx-min-height: 50px; -fx-background-color: c0df85;" text="Ir a Partida" />
 
 <!--        <Button fx:id="LoadGame" onAction="#handleLoadGame" style="-fx-font-size: 16px; -fx-min-width: 250px; -fx-min-height: 50px; -fx-background-color: c0df85;" text="Cargar Partida" />-->
 

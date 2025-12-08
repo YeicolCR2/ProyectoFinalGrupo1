@@ -316,21 +316,16 @@ public class GamePlayController implements GameActionListener {
             File file = new File("partida.xml");
             SaveLoadManager.loadGame(gameState, file);
 
-            // 1. Cargar la vista con el nuevo estado (Obligatorio)
             loadGameView();
 
-            // 2. ACTUALIZAR ESTADO DE BOTONES Y LABELS EN EL HILO FX
             Platform.runLater(() -> {
-                // Si el mazo está vacío, deshabilitar Robar/Barajar.
-                // Si ya hay cartas en la mano, deshabilitar Barajar.
+
                 boolean isBarajado = gameState.getMano().size() > 0 || gameState.getPozo().size() > 0;
 
                 if (barajarButton != null) {
-                    // Si ya hay cartas en juego, el botón de barajar debe estar deshabilitado
                     barajarButton.setDisable(isBarajado);
                 }
 
-                // Resetear el label de selección de cartas
                 if (estadoSeleccionLabel != null) {
                     estadoSeleccionLabel.setText("Seleccionadas: 0 / 3");
                 }

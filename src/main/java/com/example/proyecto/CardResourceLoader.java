@@ -45,7 +45,6 @@ public class CardResourceLoader {
         String fileName = config.getCardFileName(suit, rank);
 
         if (url != null) {
-            // CORREGIDO: Se añade 'object-fit: fill' para evitar que la imagen se corte.
             return "<img src='" + url.toExternalForm() +
                     "' alt='" + fileName + "' style='width: 100%; height: 100%; object-fit: fill;'/>";
         } else {
@@ -61,14 +60,12 @@ public class CardResourceLoader {
      * @return HTML de la imagen del dorso (solo <img>)
      */
     public String generateCardBackHtml() {
-        // RUTA CORREGIDA: Apunta a tu SVG en /resources/Boceto/
         String resourcePath = "/Boceto/Boceto.svg";
 
         try {
             URL url = getClass().getResource(resourcePath);
 
             if (url != null) {
-                // CORREGIDO: Se añade 'object-fit: fill' para evitar que el SVG se corte.
                 return "<img src='" + url.toExternalForm() + "' alt='Dorso de Carta' style='width: 100%; height: 100%; object-fit: fill;'/>";
             } else {
                 System.err.println("¡Error! No se encontró el dorso: " + resourcePath);
